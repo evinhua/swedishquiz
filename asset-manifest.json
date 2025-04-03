@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/swedishquiz/static/css/main.f19f27e2.css",
+    "main.js": "/swedishquiz/static/js/main.58b47684.js",
+    "static/js/453.17583e51.chunk.js": "/swedishquiz/static/js/453.17583e51.chunk.js",
+    "index.html": "/swedishquiz/index.html",
+    "main.f19f27e2.css.map": "/swedishquiz/static/css/main.f19f27e2.css.map",
+    "main.58b47684.js.map": "/swedishquiz/static/js/main.58b47684.js.map",
+    "453.17583e51.chunk.js.map": "/swedishquiz/static/js/453.17583e51.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f19f27e2.css",
+    "static/js/main.58b47684.js"
+  ]
+}
