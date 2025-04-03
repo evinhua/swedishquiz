@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Simple CloudFormation template for React app deployment (S3 only)'
+
+Resources:
+  # S3 bucket to host the React application
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+Outputs:
+  S3BucketName:
+    Description: Name of S3 bucket to hold website content
+    Value: !Ref WebsiteBucket
+  WebsiteURL:
+    Description: URL for the S3 website
+    Value: !GetAtt WebsiteBucket.WebsiteURL
