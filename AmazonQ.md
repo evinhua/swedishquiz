@@ -1,55 +1,49 @@
-# React App Deployment with AWS CloudFormation
+# Swedish Quiz App Deployment Notes
 
-This document explains how to deploy the React application to AWS using CloudFormation.
+## Initial Issue: Quiz freezing on the third question
 
-## Deployment Options
+The quiz was freezing on the third question because the Question component wasn't properly resetting its state when moving to a new question. This is a common issue in React applications when component state needs to be reset based on changing props.
 
-This project provides two deployment options based on your AWS permissions:
+### Solution
 
-### Option 1: Simple S3 Website (Limited Permissions)
+Added a `useEffect` hook to the Question component that resets the component's state whenever the question prop changes:
 
-If you have limited AWS permissions or are restricted by Service Control Policies (SCPs):
+```jsx
+// Reset state when question changes
+useEffect(() => {
+  setSelectedOption(null);
+  setFeedback(null);
+  setAttempts(0);
+}, [question]);
+```
 
-- **Architecture**: Uses only Amazon S3 for hosting
-- **Deployment**: `./deploy-simple.sh`
-- **Template**: `react-app-stack-simple.yaml`
-- **Limitations**: No CDN, HTTPS requires additional setup
+This ensures that when the user moves to a new question, all the previous state (selected option, feedback, and attempts) is cleared, allowing the user to properly interact with the new question.
 
-### Option 2: CloudFront + S3 (Full Permissions)
+## Deployment Issue: Blank page on AWS Amplify
 
-If you have full AWS permissions:
+When deploying to AWS Amplify, the app initially showed a blank page because the `homepage` field in package.json was set to:
 
-- **Architecture**: Uses Amazon S3 + CloudFront for global content delivery
-- **Deployment**: `./deploy.sh`
-- **Template**: `react-app-stack.yaml`
-- **Benefits**: Global CDN, HTTPS, better performance
+```json
+"homepage": "https://evinhua.github.io/swedishquiz"
+```
 
-## Security Features
+This setting was configuring the app for GitHub Pages deployment, not AWS Amplify.
 
-- Server-side encryption for S3 content
-- Follows AWS security best practices
-- Option 2 adds: CloudFront Origin Access Identity and HTTPS enforcement
+### Solution
 
-## Deployment Process
+Removed the `homepage` field from package.json, which allowed the app to be built for deployment at the root path (`/`) instead of a specific path (`/swedishquiz`).
 
-1. CloudFormation creates the required infrastructure
-2. React app is built locally
-3. Build artifacts are uploaded to S3
-4. Website is accessible via S3 URL (Option 1) or CloudFront URL (Option 2)
+## How to test the app
 
-## Troubleshooting
+1. Visit the AWS Amplify hosted URL
+2. Play through the quiz and verify that you can progress through all questions
+3. Check that the attempts counter resets properly for each new question
+4. Verify that the scoring system works correctly throughout all 10 questions
 
-If you encounter issues:
+## Additional improvements that could be made
 
-1. Ensure AWS CLI is properly configured with valid credentials
-2. Check that you have sufficient permissions in your AWS account
-3. If you see "Access denied" errors related to CloudFront, use the simple deployment option
-4. For production deployments, request necessary permissions from your AWS administrator
-
-## Customization
-
-To customize the deployment:
-
-1. Edit the CloudFormation template to modify infrastructure
-2. Update the deployment script to change deployment parameters
-3. For production use, consider adding custom domain names and proper security configurations
+1. Add error boundaries to catch and handle unexpected errors
+2. Implement local storage to save quiz progress
+3. Add animations for smoother transitions between questions
+4. Create a timer option for added challenge
+5. Add difficulty levels with different question sets
